@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/data.json", "status": 403 },
+    { "src": "/api/search", "dest": "/api/search.js" },
+    { "src": "/api/login", "dest": "/api/login.js" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
