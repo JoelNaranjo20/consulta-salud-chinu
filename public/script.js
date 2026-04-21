@@ -145,7 +145,12 @@ function showResults(results, query) {
     const isAfiliado = rawEstado.includes('AFILIADO RS');
     const badgeClass = isAfiliado ? 'status-block-afiliado' : 'status-block-no-afiliado';
     const estadoText = rawEstado ? rawEstado.replace(/[- ]+$/, '') : (isAfiliado ? 'Afiliado' : 'No Afiliado');
-    const accionSolicitud = String(r.ACCION_SOLICITUD || '').trim();
+    let accionSolicitud = String(r.ACCION_SOLICITUD || '').trim();
+    const lowerAccion = accionSolicitud.toLowerCase();
+    
+    if (lowerAccion.includes('actualizar') || lowerAccion.includes('encuesta') || lowerAccion.includes('metodolog')) {
+      accionSolicitud += `<br><br><span style="color: #ffb142;">⚠️ <strong>Requisito Indispensable:</strong></span> Debe acercarse a la oficina del Sisbén y llevar <strong>copia del documento de identidad</strong> y <strong>copia de un recibo de servicio público</strong>.`;
+    }
 
     let alertHtml = '';
     if (accionSolicitud) {
