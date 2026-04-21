@@ -70,3 +70,5 @@ app.listen(PORT, () => {
     console.log(`🚀 Servidor ejecutándose en http://localhost:${PORT}`);
     console.log(`🔒 La base de datos /data.json ahora está segura y oculta.`);
 });
+
+module.exports = app;
