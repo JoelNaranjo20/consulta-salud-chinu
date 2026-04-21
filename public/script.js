@@ -151,12 +151,13 @@ function showResults(results, query) {
     if (accionSolicitud) {
       alertHtml = `
       <div class="result-alert">
-        <svg class="result-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+        <svg class="result-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24" style="flex-shrink: 0;">
           <circle cx="12" cy="12" r="10"/>
           <line x1="12" y1="8" x2="12" y2="12"/>
           <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
-        <p><strong>Acción Requerida:</strong> ${accionSolicitud}</p>
+        <p style="margin: 0; line-height: 1.5;">El ciudadano con documento <strong>${r.TIPO_ID || ''} ${r.ID_USUARIO || ''}</strong> aparece actualmente con estado <strong>${estadoText}</strong>, sin embargo, debe realizar el siguiente trámite:<br><br>
+        <strong>Acción Requerida:</strong> ${accionSolicitud}</p>
       </div>`;
     } else if (!isAfiliado) {
       alertHtml = `
