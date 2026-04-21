@@ -1,9 +1,8 @@
 {
-  "framework": null,
   "redirects": [
     {
       "source": "/data.json",
-      "destination": "/?error=forbidden",
+      "destination": "/",
       "permanent": false
     }
   ]
