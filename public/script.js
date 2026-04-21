@@ -141,12 +141,24 @@ function showResults(results, query) {
 
   resultsContent.innerHTML = results.map(r => {
     const fullName = [r.NOMBRE1, r.NOMBRE2, r.APELLIDO1, r.APELLIDO2].filter(Boolean).join(' ');
-    const isAfiliado = r.ESTADO && r.ESTADO.includes('AFILIADO RS');
+    const rawEstado = String(r.ESTADO || '').trim();
+    const isAfiliado = rawEstado.includes('AFILIADO RS');
     const badgeClass = isAfiliado ? 'status-block-afiliado' : 'status-block-no-afiliado';
-    const estadoText = isAfiliado ? 'Afiliado' : 'No Afiliado';
+    const estadoText = rawEstado ? rawEstado.replace(/[- ]+$/, '') : (isAfiliado ? 'Afiliado' : 'No Afiliado');
+    const accionSolicitud = String(r.ACCION_SOLICITUD || '').trim();
 
     let alertHtml = '';
-    if (!isAfiliado) {
+    if (accionSolicitud) {
+      alertHtml = `
+      <div class="result-alert">
+        <svg class="result-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p><strong>Acción Requerida:</strong> ${accionSolicitud}</p>
+      </div>`;
+    } else if (!isAfiliado) {
       alertHtml = `
       <div class="result-alert">
         <svg class="result-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
