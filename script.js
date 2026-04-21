@@ -206,7 +206,7 @@ async function handleLogin(e) {
   const pass = loginPass.value;
 
   try {
-    const res = await fetch('/api/admin/data', {
+    const res = await fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user, pass })

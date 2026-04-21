@@ -3,7 +3,7 @@ const path = require('path');
 
 let database = [];
 try {
-    const rawData = fs.readFileSync(path.join(__dirname, '..', '..', 'data.json'));
+    const rawData = fs.readFileSync(path.join(__dirname, '..', 'data.json'));
     database = JSON.parse(rawData);
 } catch (error) {
     console.error('Error cargando data.json:', error);
