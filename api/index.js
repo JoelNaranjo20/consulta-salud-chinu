@@ -15,7 +15,7 @@ app.get('/data.json', (req, res) => {
 // Cargar la base de datos en memoria para búsquedas eficientes (una sola vez)
 let database = [];
 try {
-    const rawData = fs.readFileSync(path.join(__dirname, 'data.json'));
+    const rawData = fs.readFileSync(path.join(__dirname, '..', 'data.json'));
     database = JSON.parse(rawData);
     console.log(`✅ Base de datos cargada: ${database.length} registros.`);
 } catch (error) {
