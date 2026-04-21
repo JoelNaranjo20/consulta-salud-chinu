@@ -7,11 +7,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Proteger data.json de manera que no se pueda acceder directamente a través de URL
-app.get('/data.json', (req, res) => {
-    res.status(403).json({ error: 'Acceso denegado.' });
-});
-
 // Cargar la base de datos en memoria para búsquedas eficientes (una sola vez)
 let database = [];
 try {
@@ -22,20 +17,11 @@ try {
     console.error('❌ Error al cargar data.json:', error);
 }
 
-// Servir archivos estáticos controlando explícitamente qué entregamos
-app.use(express.static(__dirname, {
-    index: 'index.html',
-    setHeaders: (res, path) => {
-        // Asegurarnos que data.json nunca se entregue accidentalmente aquí
-        if (path.endsWith('data.json')) {
-            res.status(403).end('Forbidden');
-        }
-    }
-}));
-
 // =======================
 // API DE BÚSQUEDA PÚBLICA
 // =======================
+// En Vercel: api/index.js se monta en /api, así que las rutas son relativas
+// GET /api/search?q=123 → este handler responde a /api/search
 app.get('/api/search', (req, res) => {
     const query = req.query.q;
     if (!query) {
@@ -54,10 +40,10 @@ app.get('/api/search', (req, res) => {
 // =======================
 // API PARA ADMIN
 // =======================
+// POST /api/admin/data
 app.post('/api/admin/data', (req, res) => {
     const { user, pass } = req.body;
     
-    // Aquí validamos el usuario. Idealmente usar variables de entorno, por ahora hardcodeado como solicitaste:
     if (user === 'admin' && pass === 'salud2026') {
         res.json(database);
     } else {
@@ -65,10 +51,27 @@ app.post('/api/admin/data', (req, res) => {
     }
 });
 
-// Arrancar el backend
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor ejecutándose en http://localhost:${PORT}`);
-    console.log(`🔒 La base de datos /data.json ahora está segura y oculta.`);
+// Ruta por defecto para /api
+app.all('/', (req, res) => {
+    res.json({ status: 'ok', message: 'API Secretaría de Salud - Chinú' });
 });
+
+// Solo arrancar si se ejecuta directamente (NO en Vercel)
+if (process.env.VERCEL !== '1') {
+    // En local, también servir archivos estáticos
+    app.use(express.static(path.join(__dirname, '..'), {
+        index: 'index.html'
+    }));
+    
+    // Proteger data.json localmente
+    app.get('/data.json', (req, res) => {
+        res.status(403).json({ error: 'Acceso denegado.' });
+    });
+
+    app.listen(PORT, () => {
+        console.log(`🚀 Servidor ejecutándose en http://localhost:${PORT}`);
+        console.log(`🔒 La base de datos /data.json ahora está segura y oculta.`);
+    });
+}
 
 module.exports = app;
