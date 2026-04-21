@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Sistema de consulta de estado de afiliación - Secretaría de Salud, Municipio de Chinú, Córdoba">
+  <title>Consulta de Estado | Secretaría de Salud - Chinú, Córdoba</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- ============ PUBLIC VIEW ============ -->
+  <div id="publicView" class="view active">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo-section">
+          <img src="public/escudo.png" alt="Escudo de Chinú" class="logo-img">
+          <img src="public/alcaldia.png" alt="Alcaldía de Chinú" class="logo-alcaldia">
+          <div>
+            <h1 class="header-title">Secretaría de Salud</h1>
+            <p class="header-subtitle">Municipio de Chinú, Córdoba</p>
+          </div>
+        </div>
+        <button id="btnAdminLogin" class="btn-admin" title="Acceso Administrador">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" width="20" height="20">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          <span>Admin</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+      </div>
+      <div class="hero-content">
+        <span class="hero-badge">Sistema de Consulta Pública</span>
+        <h2 class="hero-title">Consulte su Estado de Afiliación</h2>
+        <p class="hero-description">Ingrese su número de documento para conocer su estado en el sistema de salud del
+          municipio de Chinú.</p>
+
+        <!-- Search Box -->
+        <div class="search-container">
+          <div class="search-box">
+            <div class="search-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </div>
+            <input type="text" id="searchInput" placeholder="Ingrese número de documento..." autocomplete="off">
+            <button id="btnSearch" class="btn-search">
+              Consultar
+            </button>
+          </div>
+          <div class="search-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <span>Puede buscar por número de cédula, tarjeta de identidad o registro civil</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="results-section hidden">
+      <div class="results-container">
+        <div class="results-header">
+          <h3 id="resultsTitle">Resultados de la búsqueda</h3>
+          <button id="btnClearResults" class="btn-clear">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            Limpiar
+          </button>
+        </div>
+        <div id="resultsContent"></div>
+      </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>© 2026 Secretaría de Salud — Municipio de Chinú, Córdoba</p>
+      <p class="footer-sub">Sistema de consulta de estado de afiliación al régimen subsidiado</p>
+    </footer>
+  </div>
+
+  <!-- ============ LOGIN MODAL ============ -->
+  <div id="loginModal" class="modal-overlay hidden">
+    <div class="modal">
+      <button id="btnCloseModal" class="modal-close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      </div>
+      <h2 class="modal-title">Acceso Administrador</h2>
+      <p class="modal-desc">Ingrese sus credenciales para acceder al panel de administración.</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginUser">Usuario</label>
+          <input type="text" id="loginUser" placeholder="Ingrese su usuario" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="loginPass">Contraseña</label>
+          <div class="password-wrapper">
+            <input type="password" id="loginPass" placeholder="Ingrese su contraseña" required
+              autocomplete="current-password">
+            <button type="button" id="togglePass" class="toggle-pass" tabindex="-1">
+              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"
+                height="18">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div id="loginError" class="login-error hidden">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="15" y1="9" x2="9" y2="15" />
+            <line x1="9" y1="9" x2="15" y2="15" />
+          </svg>
+          <span>Usuario o contraseña incorrectos</span>
+        </div>
+        <button type="submit" class="btn-login">Iniciar Sesión</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ ADMIN VIEW ============ -->
+  <div id="adminView" class="view">
+    <header class="header header-admin">
+      <div class="header-content">
+        <div class="logo-section">
+          <img src="public/escudo.png" alt="Escudo de Chinú" class="logo-img">
+          <img src="public/alcaldia.png" alt="Alcaldía de Chinú" class="logo-alcaldia">
+          <div>
+            <h1 class="header-title">Panel Administrativo</h1>
+            <p class="header-subtitle">Secretaría de Salud — Chinú, Córdoba</p>
+          </div>
+        </div>
+        <div class="admin-header-actions">
+          <button id="btnBackToPublic" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            <span>Vista Pública</span>
+          </button>
+          <button id="btnLogout" class="btn-logout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            <span>Cerrar Sesión</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Admin Content -->
+    <section class="admin-content">
+      <!-- Admin Stats -->
+      <div class="admin-stats">
+        <div class="admin-stat-card asc-primary">
+          <div class="asc-value" id="adminStatTotal">-</div>
+          <div class="asc-label">Total Registros</div>
+        </div>
+        <div class="admin-stat-card asc-success">
+          <div class="asc-value" id="adminStatAfiliados">-</div>
+          <div class="asc-label">Afiliados RS</div>
+        </div>
+        <div class="admin-stat-card asc-warning">
+          <div class="asc-value" id="adminStatNoAfiliados">-</div>
+          <div class="asc-label">No Afiliados</div>
+        </div>
+        <div class="admin-stat-card asc-info">
+          <div class="asc-value" id="adminStatNiveles">-</div>
+          <div class="asc-label">Niveles Sisben</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="admin-filters">
+        <h3 class="filters-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+          </svg>
+          Filtros y Búsqueda
+        </h3>
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label>Buscar por documento o nombre</label>
+            <input type="text" id="adminSearchInput" placeholder="Buscar..." autocomplete="off">
+          </div>
+          <div class="filter-group">
+            <label>Tipo de ID</label>
+            <select id="filterTipoId">
+              <option value="">Todos</option>
+              <option value="CC">CC - Cédula</option>
+              <option value="TI">TI - Tarjeta de Identidad</option>
+              <option value="RC">RC - Registro Civil</option>
+              <option value="CE">CE - Cédula Extranjería</option>
+              <option value="NU">NU - NUIP</option>
+              <option value="PT">PT - Permiso Temporal</option>
+              <option value="CN">CN - Certificado Nacido Vivo</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Estado</label>
+            <select id="filterEstado">
+              <option value="">Todos</option>
+              <option value="AFILIADO RS">Afiliado RS</option>
+              <option value="NO AFILIADO- ">No Afiliado</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Nivel Sisben</label>
+            <select id="filterNivel">
+              <option value="">Todos</option>
+              <option value="NIVEL I">Nivel I</option>
+              <option value="NIVEL II">Nivel II</option>
+              <option value="NIVEL III">Nivel III</option>
+              <option value="NO APLICA POR MIGRACION">No Aplica (Migración)</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button id="btnAdminFilter" class="btn-filter">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            Buscar
+          </button>
+          <button id="btnAdminClear" class="btn-filter-clear">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <polyline points="1 4 1 10 7 10" />
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+            </svg>
+            Limpiar Filtros
+          </button>
+          <button id="btnExportCSV" class="btn-filter-export">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Table -->
+      <div class="admin-table-wrapper">
+        <div class="table-info">
+          <span id="tableInfo">Mostrando 0 de 0 registros</span>
+        </div>
+        <div class="table-scroll">
+          <table class="admin-table" id="adminTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tipo ID</th>
+                <th>Documento</th>
+                <th>Primer Apellido</th>
+                <th>Segundo Apellido</th>
+                <th>Primer Nombre</th>
+                <th>Segundo Nombre</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Nivel Sisben</th>
+                <th>Población</th>
+                <th>Estado</th>
+                <th>Archivo</th>
+                <th>Acción Solicitud</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody">
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination -->
+        <div class="pagination">
+          <button id="btnPrevPage" class="btn-page" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            Anterior
+          </button>
+          <div id="pageNumbers" class="page-numbers"></div>
+          <button id="btnNextPage" class="btn-page">
+            Siguiente
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
