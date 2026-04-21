@@ -1,9 +1,0 @@
-{
-  "redirects": [
-    {
-      "source": "/data.json",
-      "destination": "/",
-      "permanent": false
-    }
-  ]
-}
