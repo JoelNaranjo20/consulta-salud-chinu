@@ -27,10 +27,8 @@ const resultsContent = document.getElementById('resultsContent');
 const resultsTitle = document.getElementById('resultsTitle');
 const btnClearResults = document.getElementById('btnClearResults');
 const btnAdminLogin = document.getElementById('btnAdminLogin');
-
-
-
-// Login
+const btnThemeTogglePublic = document.getElementById('btnThemeTogglePublic');
+const btnThemeToggleAdmin = document.getElementById('btnThemeToggleAdmin');// Login
 const loginForm = document.getElementById('loginForm');
 const loginUser = document.getElementById('loginUser');
 const loginPass = document.getElementById('loginPass');
@@ -148,22 +146,39 @@ function showResults(results, query) {
     let accionSolicitud = String(r.ACCION_SOLICITUD || '').trim();
     const lowerAccion = accionSolicitud.toLowerCase();
     
-    if (lowerAccion.includes('actualizar') || lowerAccion.includes('encuesta') || lowerAccion.includes('metodolog')) {
+    const isUrgent = lowerAccion.includes('listado censal') || lowerAccion.includes('poblacion especial') || lowerAccion.includes('población especial');
+
+    if (isUrgent) {
+      accionSolicitud += `<br><br><span style="color: #d32f2f;">🚨 <strong>TRÁMITE DE CARÁCTER URGENTE:</strong></span> Es <strong>obligatorio e inmediato</strong> que se dirija a la Oficina del Sisbén de Chinú. Lleve <strong>copia de su documento de identidad</strong> y un <strong>recibo de servicio público</strong> para resolver su situación de población especial.`;
+    } else if (lowerAccion.includes('actualizar') || lowerAccion.includes('encuesta') || lowerAccion.includes('metodolog')) {
       accionSolicitud += `<br><br><span style="color: #ffb142;">⚠️ <strong>Requisito Indispensable:</strong></span> Debe acercarse a la oficina del Sisbén y llevar <strong>copia del documento de identidad</strong> y <strong>copia de un recibo de servicio público</strong>.`;
     }
 
     let alertHtml = '';
     if (accionSolicitud) {
-      alertHtml = `
-      <div class="result-alert">
-        <svg class="result-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24" style="flex-shrink: 0;">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        <p style="margin: 0; line-height: 1.5;">El ciudadano con documento <strong>${r.TIPO_ID || ''} ${r.ID_USUARIO || ''}</strong> aparece actualmente con estado <strong>${estadoText}</strong>, sin embargo, debe realizar el siguiente trámite:<br><br>
-        <strong>Acción Requerida:</strong> ${accionSolicitud}</p>
-      </div>`;
+      if (isUrgent) {
+        alertHtml = `
+        <div class="result-alert" style="background-color: #ffebee; border-left-color: #f44336; color: #b71c1c;">
+          <svg class="result-alert-icon" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2" width="24" height="24" style="flex-shrink: 0;">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <p style="margin: 0; line-height: 1.5;">El ciudadano con documento <strong>${r.TIPO_ID || ''} ${r.ID_USUARIO || ''}</strong> aparece actualmente con estado <strong>${estadoText}</strong>. <br><strong style="color: #d32f2f; font-size: 1.1em;">¡ATENCIÓN! Se requiere realizar el siguiente trámite con urgencia:</strong><br><br>
+          ${accionSolicitud}</p>
+        </div>`;
+      } else {
+        alertHtml = `
+        <div class="result-alert">
+          <svg class="result-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24" style="flex-shrink: 0;">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <p style="margin: 0; line-height: 1.5;">El ciudadano con documento <strong>${r.TIPO_ID || ''} ${r.ID_USUARIO || ''}</strong> aparece actualmente con estado <strong>${estadoText}</strong>, sin embargo, debe realizar el siguiente trámite:<br><br>
+          <strong>Acción Requerida:</strong> ${accionSolicitud}</p>
+        </div>`;
+      }
     } else if (!isAfiliado) {
       alertHtml = `
       <div class="result-alert">
@@ -491,6 +506,30 @@ document.addEventListener('keydown', e => {
 });
 
 // ==============================
+// Theme Toggle
+// ==============================
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+if (btnThemeTogglePublic) btnThemeTogglePublic.addEventListener('click', toggleTheme);
+if (btnThemeToggleAdmin) btnThemeToggleAdmin.addEventListener('click', toggleTheme);
+
+// ==============================
 // Init
 // ==============================
+initTheme();
 loadData();
