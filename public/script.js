@@ -523,13 +523,10 @@ function initTheme() {
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
-  } else if (savedTheme === 'light') {
+  } else {
     document.documentElement.removeAttribute('data-theme');
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    localStorage.setItem('theme', 'dark');
   }
-  // If no preference, :root (light) is already the default
+  // Light theme is always the default for new visitors
 }
 
 if (btnThemeTogglePublic) btnThemeTogglePublic.addEventListener('click', toggleTheme);
