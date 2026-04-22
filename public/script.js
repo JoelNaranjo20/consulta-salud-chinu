@@ -140,7 +140,7 @@ function showResults(results, query) {
   resultsContent.innerHTML = results.map(r => {
     const fullName = [r.NOMBRE1, r.NOMBRE2, r.APELLIDO1, r.APELLIDO2].filter(Boolean).join(' ');
     const rawEstado = String(r.ESTADO || '').trim();
-    const isAfiliado = rawEstado.includes('AFILIADO RS');
+    const isAfiliado = rawEstado.includes('AFILIADO AL REGIMEN SUBSIDIADO');
     const badgeClass = isAfiliado ? 'status-block-afiliado' : 'status-block-no-afiliado';
     const estadoText = rawEstado ? rawEstado.replace(/[- ]+$/, '') : (isAfiliado ? 'Afiliado' : 'No Afiliado');
     let accionSolicitud = String(r.ACCION_SOLICITUD || '').trim();
@@ -293,7 +293,7 @@ function togglePassword() {
 // ==============================
 function updateAdminStats() {
   const total = allData.length;
-  const afiliados = allData.filter(r => r.ESTADO && r.ESTADO.includes('AFILIADO RS')).length;
+  const afiliados = allData.filter(r => r.ESTADO && r.ESTADO.includes('AFILIADO AL REGIMEN SUBSIDIADO')).length;
   const noAfiliados = total - afiliados;
   const niveles = new Set(allData.map(r => r.NIVEL_SISBEN).filter(Boolean)).size;
 
@@ -358,7 +358,7 @@ function renderAdminTable() {
     `;
   } else {
     adminTableBody.innerHTML = pageData.map((r, i) => {
-      const isAfiliado = r.ESTADO && r.ESTADO.includes('AFILIADO RS');
+      const isAfiliado = r.ESTADO && r.ESTADO.includes('AFILIADO AL REGIMEN SUBSIDIADO');
       const badgeClass = isAfiliado ? 'table-badge-success' : 'table-badge-danger';
       const estadoShort = isAfiliado ? 'Afiliado' : 'No Afiliado';
 
