@@ -612,6 +612,36 @@ body {
   line-height: 1.5;
 }
 
+/* Urgent alert variant — dark theme friendly */
+.result-alert-urgent {
+  background: rgba(239, 83, 80, 0.1);
+  border-left: 4px solid #ef5350;
+  color: var(--text-primary);
+}
+
+.result-alert-urgent .result-alert-icon {
+  color: #ef5350;
+}
+
+.result-alert-urgent p {
+  color: #fce4ec;
+}
+
+.result-alert-urgent strong {
+  color: #ffcdd2;
+}
+
+/* Label styles for inline alert emphasis */
+.alert-urgent-label {
+  color: #ef9a9a;
+  font-weight: 700;
+}
+
+.alert-warning-label {
+  color: #ffe082;
+  font-weight: 700;
+}
+
 .result-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
